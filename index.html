@@ -14,23 +14,25 @@
   </head>
 
   <body>
-    <div class="text-center mb-4">
-      <h1
-        class="text-8xl"
-        style="font-family: 'Rampart One', Helvetica, sans-serif"
-      >
-        COUCAPAGS
-      </h1>
-      <h2 class="mt-2 text-xl">
-        <span class="font-bold">Cou</span>ntries /
-        <span class="font-bold">Cap</span>itals / Fl<span class="font-bold"
-          >ags</span
+    <div class="w-full lg:max-w-xl mx-auto">
+      <div class="text-center mt-6 mb-4">
+        <h1
+          class="text-5xl mb-4"
+          style="font-family: 'Rampart One', Helvetica, sans-serif"
         >
-      </h2>
+          COUCAPAGS
+        </h1>
+        <h2 class="mt-2 text-xl">
+          <span class="font-bold">Cou</span>ntries /
+          <span class="font-bold">Cap</span>itals / Fl<span class="font-bold"
+            >ags</span
+          >
+        </h2>
+      </div>
+      <div class="px-2" id="container"></div>
+      <canvas id="rendering-canvas"></canvas>
+      <div id="flag-target"></div>
     </div>
-    <div id="container"></div>
-    <canvas id="rendering-canvas"></canvas>
-    <div id="flag-target"></div>
     <script src="dist/script.dist.js"></script>
   </body>
 </html>

@@ -7185,34 +7185,58 @@
                 color
               });
             },
+            class: "rounded-md",
             style: {
               width: "60px",
               height: "60px",
               backgroundColor: color,
-              border: this.state.color == color ? "4px solid red" : "4px solid black",
+              border: this.state.color == color ? "2px solid red" : "2px solid black",
               cursor: "pointer"
             }
-          }), /* @__PURE__ */ h("div", {
-            onClick: () => {
-              const canvas = document.querySelector("#canvas");
-              const ctx = canvas.getContext("2d");
-              ctx.rect(
-                0,
-                0,
-                canvas.getAttribute("width"),
-                canvas.getAttribute("height")
-              );
-              ctx.fillStyle = color;
-              ctx.fill();
-            },
-            class: "mt-1 cursor-pointer rounded-md flex items-center justify-center p-2 bg-slate-700 text-white"
-          }, /* @__PURE__ */ h("span", null, "fill")))
+          }))
         );
       }
+      let radiusRows = [];
+      radiusRows.push(
+        /* @__PURE__ */ h("td", {
+          class: "pr-1"
+        }, /* @__PURE__ */ h("div", {
+          onClick: () => {
+            const canvas = document.querySelector("#canvas");
+            const ctx = canvas.getContext("2d");
+            ctx.rect(
+              0,
+              0,
+              canvas.getAttribute("width"),
+              canvas.getAttribute("height")
+            );
+            ctx.fillStyle = this.state.color;
+            ctx.fill();
+          },
+          class: "flex items-center justify-center rounded-md",
+          style: {
+            width: "60px",
+            height: "60px",
+            backgroundColor: this.state.color,
+            border: "1px solid black",
+            cursor: "pointer"
+          }
+        }, /* @__PURE__ */ h("svg", {
+          width: "40",
+          height: "40",
+          viewBox: "-1 0 16 16",
+          xmlns: "http://www.w3.org/2000/svg"
+        }, /* @__PURE__ */ h("path", {
+          fill: "#fff",
+          stroke: "#000",
+          "stroke-width": "0.5",
+          d: "M6.192 2.78c-.458-.677-.927-1.248-1.35-1.643a2.972 2.972 0 0 0-.71-.515c-.217-.104-.56-.205-.882-.02c-.367.213-.427.63-.43.896c-.003.304.064.664.173 1.044c.196.687.556 1.528 1.035 2.402L.752 8.22c-.277.277-.269.656-.218.918c.055.283.187.593.36.903c.348.627.92 1.361 1.626 2.068c.707.707 1.441 1.278 2.068 1.626c.31.173.62.305.903.36c.262.05.64.059.918-.218l5.615-5.615c.118.257.092.512.05.939c-.03.292-.068.665-.073 1.176v.123h.003a1 1 0 0 0 1.993 0H14v-.057a1.01 1.01 0 0 0-.004-.117c-.055-1.25-.7-2.738-1.86-3.494a4.322 4.322 0 0 0-.211-.434c-.349-.626-.92-1.36-1.627-2.067c-.707-.707-1.441-1.279-2.068-1.627c-.31-.172-.62-.304-.903-.36c-.262-.05-.64-.058-.918.219l-.217.216zM4.16 1.867c.381.356.844.922 1.311 1.632l-.704.705c-.382-.727-.66-1.402-.813-1.938a3.283 3.283 0 0 1-.131-.673c.091.061.204.15.337.274zm.394 3.965c.54.852 1.107 1.567 1.607 2.033a.5.5 0 1 0 .682-.732c-.453-.422-1.017-1.136-1.564-2.027l1.088-1.088c.054.12.115.243.183.365c.349.627.92 1.361 1.627 2.068c.706.707 1.44 1.278 2.068 1.626c.122.068.244.13.365.183l-4.861 4.862a.571.571 0 0 1-.068-.01c-.137-.027-.342-.104-.608-.252c-.524-.292-1.186-.8-1.846-1.46c-.66-.66-1.168-1.32-1.46-1.846c-.147-.265-.225-.47-.251-.607a.573.573 0 0 1-.01-.068l3.048-3.047zm2.87-1.935a2.44 2.44 0 0 1-.241-.561c.135.033.324.11.562.241c.524.292 1.186.8 1.846 1.46c.45.45.83.901 1.118 1.31a3.497 3.497 0 0 0-1.066.091a11.27 11.27 0 0 1-.76-.694c-.66-.66-1.167-1.322-1.458-1.847z"
+        }))))
+      );
       for (const size of this.props.radii) {
-        colorRows.push(
+        radiusRows.push(
           /* @__PURE__ */ h("td", null, /* @__PURE__ */ h("div", {
-            class: "flex items-center cursor-pointer justify-center bg-green-200",
+            class: `rounded-md flex items-center cursor-pointer justify-center ${this.state.radius == size ? "bg-green-200" : "bg-grey-200"}`,
             style: {
               minWidth: "60px",
               minHeight: "60px"
@@ -7226,17 +7250,22 @@
             style: {
               width: `${size * 2}px`,
               height: `${size * 2}px`,
-              backgroundColor: this.state.radius == size ? "red" : "white",
-              border: "4px solid black",
+              backgroundColor: this.state.color,
+              border: "2px solid black",
               borderRadius: "100000px"
             }
           })))
         );
       }
+      let radiusSelector = /* @__PURE__ */ h("table", {
+        class: "mt-1"
+      }, /* @__PURE__ */ h("tbody", null, /* @__PURE__ */ h("tr", null, radiusRows)));
       let colorSelector = /* @__PURE__ */ h("table", {
         class: "mt-1"
       }, /* @__PURE__ */ h("tbody", null, /* @__PURE__ */ h("tr", null, colorRows)));
-      return /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("div", null, colorSelector));
+      return /* @__PURE__ */ h("div", {
+        class: "flex flex-col items-center"
+      }, /* @__PURE__ */ h("div", null, colorSelector), /* @__PURE__ */ h("div", null, radiusSelector));
     }
   };
   function flagDrawer(options) {
@@ -7256,53 +7285,71 @@
       ctx.fillStyle = options2.color;
       ctx.fill();
     };
-    document.body.addEventListener("mouseup", () => {
+    const mouseStart = (e3) => {
+      const canvas = e3.target;
+      e3.stopPropagation();
+      e3.preventDefault();
+      const ctx = canvas.getContext("2d");
+      rect = canvas.getBoundingClientRect();
+      let x = e3.x - rect.x;
+      let y2 = e3.y - rect.y;
+      drawCircle(ctx, {
+        x,
+        y: y2,
+        radius: currRadius,
+        color: currColor
+      });
+      lastCoords = [x, y2];
+      isDrawing = true;
+    };
+    const mouseMove = (e3) => {
+      if (!isDrawing) {
+        return;
+      }
+      e3.stopPropagation();
+      e3.preventDefault();
+      let x = null;
+      let y2 = null;
+      if (e3 instanceof TouchEvent) {
+        const touch = e3.targetTouches[0];
+        x = touch.clientX - rect.x;
+        y2 = touch.clientY - rect.y;
+      } else {
+        x = e3.x - rect.x;
+        y2 = e3.y - rect.y;
+      }
+      const canvas = e3.target;
+      const ctx = canvas.getContext("2d");
+      if (lastCoords !== null) {
+        ctx.beginPath();
+        ctx.moveTo(lastCoords[0], lastCoords[1]);
+        ctx.lineTo(x, y2);
+        ctx.lineWidth = currRadius * 2;
+        ctx.strokeStyle = currColor;
+        ctx.stroke();
+      }
+      drawCircle(ctx, {
+        x,
+        y: y2,
+        radius: currRadius,
+        color: currColor
+      });
+      lastCoords = [x, y2];
+    };
+    const mouseEnd = (e3) => {
       isDrawing = false;
-    });
+    };
+    document.body.addEventListener("mouseup", mouseEnd);
+    document.body.addEventListener("touchend", mouseEnd);
     let canvasEl = /* @__PURE__ */ h("canvas", {
       width: canvasWidth,
       height: canvasHeight,
       id: "canvas",
       style: "border: 1px solid black; margin: 0 auto;",
-      onMouseDown: (e3) => {
-        const canvas = e3.target;
-        const ctx = canvas.getContext("2d");
-        rect = canvas.getBoundingClientRect();
-        let x = e3.x - rect.x;
-        let y2 = e3.y - rect.y;
-        drawCircle(ctx, {
-          x,
-          y: y2,
-          radius: currRadius,
-          color: currColor
-        });
-        lastCoords = [x, y2];
-        isDrawing = true;
-      },
-      onMouseMove: (e3) => {
-        if (!isDrawing) {
-          return;
-        }
-        let x = e3.x - rect.x;
-        let y2 = e3.y - rect.y;
-        const canvas = e3.target;
-        const ctx = canvas.getContext("2d");
-        if (lastCoords !== null) {
-          ctx.beginPath();
-          ctx.moveTo(lastCoords[0], lastCoords[1]);
-          ctx.lineTo(x, y2);
-          ctx.lineWidth = currRadius * 2;
-          ctx.strokeStyle = currColor;
-          ctx.stroke();
-        }
-        drawCircle(ctx, {
-          x,
-          y: y2,
-          radius: currRadius,
-          color: currColor
-        });
-        lastCoords = [x, y2];
-      }
+      onMouseDown: mouseStart,
+      onMouseMove: mouseMove,
+      onTouchStart: mouseStart,
+      onTouchMove: mouseMove
     });
     return /* @__PURE__ */ h("div", {
       class: "mt-2"
@@ -7404,7 +7451,9 @@
           }
         }, "Submit");
       }
-      return /* @__PURE__ */ h("div", null, button);
+      return /* @__PURE__ */ h("div", {
+        class: "mt-2"
+      }, button);
     }
   };
   async function checkSubmission(data, country, countryData) {
@@ -7438,49 +7487,59 @@
   async function main() {
     let cr = await fetch("/data/countries.json");
     let countries = await cr.json();
-    console.log(countries);
     let r3 = await fetch("/colors.json");
     let content = await r3.json();
     let country = pickCountry(content);
     let colors = content[country];
     let img = new Image();
     img.src = `/data/${country}/flag.svg`;
-    let height = img.height;
-    let width = img.width;
-    let scale = 300 / height;
-    console.log(scale);
-    P(
-      /* @__PURE__ */ h("div", {
-        class: "flex justify-center flex-col items-center"
-      }, /* @__PURE__ */ h("img", {
-        style: "width: 400px",
-        class: "noselect",
-        src: `/data/${country}/outline.svg`
-      }), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", {
-        class: "mr-2"
-      }, "Country Name"), /* @__PURE__ */ h("input", {
-        class: "mt-2 input input-bordered input-primary w-full max-w-xs",
-        type: "text",
-        id: "country-name"
-      })), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", {
-        class: "mr-2"
-      }, "Country Capital"), /* @__PURE__ */ h("input", {
-        class: "mt-2 input input-bordered input-primary w-full max-w-xs",
-        type: "text",
-        id: "country-capital"
-      })), /* @__PURE__ */ h("p", null, "Draw the flag"), flagDrawer({
-        width: height * scale,
-        height: width * scale,
-        colors
-      }), /* @__PURE__ */ h(Checker, {
-        data: content,
-        country,
-        countryData: countries[country]
-      }), /* @__PURE__ */ h("img", {
-        src: `/data/${country}/flag.svg`
-      })),
-      container
-    );
+    img.onload = () => {
+      let height = img.height;
+      let width = img.width;
+      let goalHeight = 150;
+      let scale = goalHeight / height;
+      height = height * scale;
+      width = width * scale;
+      P(
+        /* @__PURE__ */ h("div", {
+          class: "flex justify-center flex-col items-center"
+        }, /* @__PURE__ */ h("img", {
+          class: "noselect w-60",
+          src: `/data/${country}/outline.svg`
+        }), /* @__PURE__ */ h("div", {
+          class: "w-full flex items-center flex-col px-4"
+        }, /* @__PURE__ */ h("div", {
+          class: "mb-2 w-full"
+        }, /* @__PURE__ */ h("span", {
+          class: "font-bold block"
+        }, "Name"), /* @__PURE__ */ h("input", {
+          class: "mt-2 input input-bordered input-primary w-full",
+          type: "text",
+          id: "country-name"
+        })), /* @__PURE__ */ h("div", {
+          class: "mb-2 w-full"
+        }, /* @__PURE__ */ h("span", {
+          class: "font-bold block"
+        }, "Capital"), /* @__PURE__ */ h("input", {
+          class: "mt-2 input input-bordered input-primary w-full",
+          type: "text",
+          id: "country-capital"
+        }))), /* @__PURE__ */ h("div", {
+          class: "w-full"
+        }, /* @__PURE__ */ h("span", {
+          class: "px-4 font-bold block"
+        }, "The Flag")), /* @__PURE__ */ h("div", null, flagDrawer({
+          width,
+          height,
+          colors
+        })), /* @__PURE__ */ h(Checker, {
+          data: content,
+          country,
+          countryData: countries[country]
+        })),
+        container
+      );
+    };
   }
   main();
 })();
