@@ -1623,33 +1623,163 @@
       }, button);
     }
   };
+  var failPhrases = ["Oopsie doopsie", "Not quite"];
+  var successPhrases = ["Great job"];
+  function choose(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+  function showModal(successes) {
+    let trackerRows = [];
+    trackerRows.push(
+      /* @__PURE__ */ h("tr", null, /* @__PURE__ */ h("td", null, /* @__PURE__ */ h("div", {
+        class: "mr-4"
+      }, "Name")), /* @__PURE__ */ h("td", null, successes.name ? "\u2714\uFE0F" : successes.name === null ? "\u2754" : "\u274C"))
+    );
+    trackerRows.push(
+      /* @__PURE__ */ h("tr", null, /* @__PURE__ */ h("td", null, /* @__PURE__ */ h("div", {
+        class: "mr-4"
+      }, "Capital")), /* @__PURE__ */ h("td", null, successes.capital ? "\u2714\uFE0F" : successes.capital === null ? "\u2754" : "\u274C"))
+    );
+    trackerRows.push(
+      /* @__PURE__ */ h("tr", null, /* @__PURE__ */ h("td", null, /* @__PURE__ */ h("div", {
+        class: "mr-4"
+      }, "Flag")), /* @__PURE__ */ h("td", null, successes.flag ? "\u2714\uFE0F" : successes.flag === null ? "\u2754" : "\u274C"))
+    );
+    let shareText = null;
+    let passed = successes.name && successes.flag && successes.capital;
+    if (passed) {
+      shareText = "meow";
+    } else {
+      shareText = `Uh oh! I'm stuck at ${successes.num_attempts} tries on today's Coucapag! Maybe you can help me?`;
+    }
+    let tryAgainButton = null;
+    if (!passed) {
+      tryAgainButton = /* @__PURE__ */ h("button", {
+        onClick: () => {
+          hideErrorModal();
+        },
+        class: "btn mt-4"
+      }, "Try Again");
+    }
+    const pluralize = (word, n2) => {
+      if (n2 !== 1) {
+        return word + "s";
+      }
+      return word;
+    };
+    let attemptMsg = null;
+    if (passed) {
+      attemptMsg = `Correct in ${successes.num_attempts} ${pluralize("attempt", successes.num_attempts)} today!`;
+    } else {
+      attemptMsg = `${successes.num_attempts} ${pluralize("attempt", successes.num_attempts)} so far today :()`;
+    }
+    const modal = /* @__PURE__ */ h("div", {
+      class: "py-10 flex flex-col items-center justify-center w-80 max-w-md bg-slate-700 text-center text-white border-2 rounded-lg shadow-2xl drop-shadow-2xl"
+    }, /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("span", {
+      style: "font-family: Helvetica, sans-serif",
+      class: "mt-10 bg-slate-100 p-2 text-black text-4xl rounded-xl"
+    }, passed ? choose(successPhrases) : choose(failPhrases), "!")), /* @__PURE__ */ h("div", {
+      class: "mt-4"
+    }, attemptMsg), /* @__PURE__ */ h("div", {
+      class: "mt-4"
+    }, /* @__PURE__ */ h("table", null, /* @__PURE__ */ h("tbody", null, trackerRows))), /* @__PURE__ */ h("div", null, tryAgainButton), /* @__PURE__ */ h("div", null, /* @__PURE__ */ h("button", {
+      onClick: () => {
+        share(shareText);
+      },
+      class: "btn mt-4"
+    }, /* @__PURE__ */ h("svg", {
+      xmlns: "http://www.w3.org/2000/svg",
+      width: "32",
+      height: "32",
+      viewBox: "0 0 16 16"
+    }, /* @__PURE__ */ h("g", {
+      fill: "none",
+      stroke: "currentColor",
+      "stroke-linecap": "round",
+      "stroke-linejoin": "round",
+      "stroke-width": "1.5"
+    }, /* @__PURE__ */ h("circle", {
+      cx: "4",
+      cy: "8",
+      r: "2.25"
+    }), /* @__PURE__ */ h("circle", {
+      cx: "12",
+      cy: "12",
+      r: "2.25"
+    }), /* @__PURE__ */ h("circle", {
+      cx: "12",
+      cy: "4",
+      r: "2.25"
+    }), /* @__PURE__ */ h("path", {
+      d: "m6 9l4 2M6 7l4-2"
+    }))), " ", passed ? "Share" : "Give Up")));
+    P(modal, document.querySelector("#error-modal"));
+  }
+  function hideErrorModal() {
+    document.querySelector("#error-modal").innerHTML = "";
+  }
+  function copyToClipboard(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+      var successful = document.execCommand("copy");
+      var msg = successful ? "successful" : "unsuccessful";
+    } catch (err) {
+      console.error(err);
+    }
+    document.body.removeChild(textArea);
+  }
+  function share(msg) {
+    const url = "https://coucapags.whatscookin.biz/";
+    if (navigator.share) {
+      navigator.share({
+        title: url,
+        text: msg,
+        url
+      }).then(() => console.log("Successful share")).catch((error) => console.log("Error sharing", error));
+    } else {
+      console.log("Sharing", url);
+      copyToClipboard(msg + "\n\n" + url);
+      alert("Copied to clipboard!");
+    }
+  }
   async function checkSubmission(data, country, countryData) {
     let countries = Object.keys(data);
     const name = document.querySelector("#country-name").value;
     const capital = document.querySelector("#country-capital").value;
-    if (false) {
-      alert("wrong name");
-    } else if (false) {
-      alert("wrong capital");
-    } else {
+    console.log(countryData);
+    let prevAttempts = localStorage.getItem("num_attempts");
+    if (prevAttempts === null || prevAttempts === void 0) {
+      prevAttempts = 0;
+    }
+    prevAttempts = parseInt(prevAttempts);
+    let currAttempts = prevAttempts + 1;
+    localStorage.setItem("num_attempts", currAttempts);
+    let successes = {
+      name: null,
+      capital: null,
+      flag: null,
+      num_attempts: currAttempts
+    };
+    successes.name = countryData.name === name;
+    successes.capital = countryData.capital === capital;
+    if (successes.name && successes.capital) {
       let flagMatches = await rankFlags(countries);
       console.log(flagMatches);
       console.log(flagMatches.slice(0, 10).map((x) => x.name));
       console.log(flagMatches.slice(0, 10).map((x) => x.name));
       let isInTopN = flagMatches.slice(0, 4).map((x) => x.name).includes(country);
       let countryFlagToShow = isInTopN ? country : flagMatches[0].name;
-      if (flagMatches.slice(0, 4).map((x) => x.name).includes(country)) {
-        alert("great job!");
-      } else {
-        alert("wrong flag");
-      }
-      P(
-        /* @__PURE__ */ h("img", {
-          src: `/data/${countryFlagToShow}/flag.svg`
-        }),
-        document.querySelector("#flag-target")
-      );
+      let isFlagMatch = flagMatches.slice(0, 4).map((x) => x.name).includes(country);
+      successes.flag = isFlagMatch;
     }
+    showModal(successes);
   }
   async function main() {
     let cr = await fetch("/data/countries.json");
