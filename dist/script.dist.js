@@ -1670,9 +1670,15 @@
     let attemptMsg = null;
     let today = new Date().toLocaleDateString();
     if (passed) {
-      attemptMsg = `Correct in ${successes.num_attempts} ${pluralize("attempt", successes.num_attempts)} on ${today}!`;
+      attemptMsg = `Correct in ${successes.num_attempts} ${pluralize(
+        "attempt",
+        successes.num_attempts
+      )} on ${today}!`;
     } else {
-      attemptMsg = `${successes.num_attempts} ${pluralize("attempt", successes.num_attempts)} so far on ${today} :(`;
+      attemptMsg = `${successes.num_attempts} ${pluralize(
+        "attempt",
+        successes.num_attempts
+      )} so far on ${today} :(`;
     }
     const modal = /* @__PURE__ */ h("div", {
       class: "py-10 flex flex-col items-center justify-center w-80 max-w-md bg-slate-700 text-center text-white border-2 rounded-lg shadow-2xl drop-shadow-2xl"
@@ -1750,8 +1756,47 @@
       alert("Copied to clipboard!");
     }
   }
+  function lenientStringMatch(expected, actual) {
+    let removeChars = [" ", "'", "\u02BB", "."];
+    expected = expected.toLowerCase();
+    actual = actual.toLowerCase();
+    for (const char of removeChars) {
+      expected = expected.replaceAll(char, "");
+      actual = actual.replaceAll(char, "");
+    }
+    let acceptableSubstitutions = {
+      \u00E9: ["e"],
+      \u00F3: ["o"],
+      \u0103: ["a"],
+      \u0219: ["s"],
+      \u00ED: ["i"]
+    };
+    if (expected.length !== actual.length) {
+      return false;
+    }
+    for (let i2 = 0; i2 < expected.length; i2++) {
+      let charA = expected.charAt(i2);
+      let charB = actual.charAt(i2);
+      console.log(charA, charB);
+      if (charA !== charB) {
+        let subs = acceptableSubstitutions[charA];
+        if (!subs) {
+          return false;
+        }
+        if (!subs.includes(charB)) {
+          return false;
+        }
+      }
+    }
+    return true;
+    console.log(expected.length);
+    console.log(actual.length);
+    return expected === actual;
+  }
   async function checkSubmission(data, country, countryData) {
     let countries = Object.keys(data);
+    console.log(countryData.capital);
+    console.log(lenientStringMatch(countryData.capital, "SAn Jose"));
     const name = document.querySelector("#country-name").value;
     const capital = document.querySelector("#country-capital").value;
     console.log(countryData);
@@ -1768,8 +1813,8 @@
       flag: null,
       num_attempts: currAttempts
     };
-    successes.name = countryData.name === name;
-    successes.capital = countryData.capital === capital;
+    successes.name = lenientStringMatch(countryData.name, name);
+    successes.capital = lenientStringMatch(countryData.capital, capital);
     if (successes.name && successes.capital) {
       let flagMatches = await rankFlags(countries);
       console.log(flagMatches);
