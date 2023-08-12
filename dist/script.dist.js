@@ -1668,10 +1668,11 @@
       return word;
     };
     let attemptMsg = null;
+    let today = new Date().toLocaleDateString();
     if (passed) {
-      attemptMsg = `Correct in ${successes.num_attempts} ${pluralize("attempt", successes.num_attempts)} today!`;
+      attemptMsg = `Correct in ${successes.num_attempts} ${pluralize("attempt", successes.num_attempts)} on ${today}!`;
     } else {
-      attemptMsg = `${successes.num_attempts} ${pluralize("attempt", successes.num_attempts)} so far today :()`;
+      attemptMsg = `${successes.num_attempts} ${pluralize("attempt", successes.num_attempts)} so far on ${today} :(`;
     }
     const modal = /* @__PURE__ */ h("div", {
       class: "py-10 flex flex-col items-center justify-center w-80 max-w-md bg-slate-700 text-center text-white border-2 rounded-lg shadow-2xl drop-shadow-2xl"
